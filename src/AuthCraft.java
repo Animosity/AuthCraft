@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -29,10 +30,6 @@ public class AuthCraft extends Plugin {
      * The loaded auth values
      */
     public Map<String, String> authTable = new HashMap<String, String>();
-    /**
-     * internal use, temporary for players
-     */
-    public final Map<String, InventoryBackup> playerCache = new HashMap<String, InventoryBackup>();
     /**
      * When the last "You need to be identified to do that!" message was sent
      */
@@ -61,9 +58,7 @@ public class AuthCraft extends Plugin {
         register(PluginLoader.Hook.LOGIN);
         register(PluginLoader.Hook.PLAYER_MOVE);
         register(PluginLoader.Hook.SERVERCOMMAND);
-        register(PluginLoader.Hook.INVENTORY_CHANGE);
-        register(PluginLoader.Hook.CRAFTINVENTORY_CHANGE);
-        register(PluginLoader.Hook.EQUIPMENT_CHANGE);
+        register(PluginLoader.Hook.OPEN_INVENTORY);
         register(PluginLoader.Hook.ITEM_DROP);
     }
 
@@ -102,10 +97,6 @@ public class AuthCraft extends Plugin {
             player.setGroups(etc.getDataSource().getPlayer(player.getName()).getGroups());
             player.setIgnoreRestrictions(etc.getDataSource().getPlayer(player.getName()).canIgnoreRestrictions());
             //IF THE REGISTERED FEW TIME AGO, HE MIGHT NOT HAVE A BACKUP
-            if (playerCache.containsKey(player.getName().toLowerCase())) {
-                playerCache.get(player.getName().toLowerCase()).restoreBackup();
-                playerCache.remove(player.getName().toLowerCase());
-            }
         }
         return true;
     }

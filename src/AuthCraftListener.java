@@ -25,15 +25,8 @@ public class AuthCraftListener extends PluginListener {
 		return parent.checkAuth(player);
 	}
 
-	public boolean onInventoryChange(Player player) {
-		return parent.checkAuth(player);
-	}
-
-	public boolean onCraftInventoryChange(Player player) {
-		return parent.checkAuth(player);
-	}
-
-	public boolean onEquipmentChange(Player player) {
+	@Override
+	public boolean onOpenInventory(Player player, Inventory inventory) {
 		return parent.checkAuth(player);
 	}
 
@@ -72,10 +65,6 @@ public class AuthCraftListener extends PluginListener {
 				if (!realPassword.equals(parent.encrypt(password))) {
 					parent.log("Warning: " + player.getName().toLowerCase() + " gave the wrong password !! IP: "
 							+ player.getIP());
-					if (parent.playerCache.containsKey(player.getName().toLowerCase())) {
-						parent.playerCache.get(player.getName().toLowerCase()).restoreBackup();
-						parent.playerCache.remove(player.getName().toLowerCase());
-					}
 					player.kick("Invalid password."); // be forceful! leave no
 					// prisoners!
 				} else {
@@ -239,12 +228,6 @@ public class AuthCraftListener extends PluginListener {
 	public void onDisconnect(Player player) {
 		if (parent.authenticated.contains(player.getName().toLowerCase())) {
 			parent.authenticated.remove(player.getName().toLowerCase());
-		}
-
-		else {
-			if (parent.playerCache.containsKey(player.getName().toLowerCase())) {
-				parent.playerCache.remove(player.getName().toLowerCase());
-			}
 		}
 	}
 
